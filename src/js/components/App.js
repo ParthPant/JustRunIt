@@ -5,7 +5,8 @@ class App extends Component {
     super()
     this.state = {
       code: '',
-      lang: 'c++'
+      lang: 'c++',
+      output: ''
     }
     
     this.handelGoButton = this.handelGoButton.bind(this)
@@ -23,7 +24,8 @@ class App extends Component {
     }
     fetch('http://localhost:3000/run', requestOptions)
       .then(res => res.text())
-      .then(data => console.log(data))
+      .then(data => {this.setState({output: data})
+      })
   }
 
   handleLangChange(event){
@@ -46,6 +48,7 @@ class App extends Component {
         <textarea id='code' name='code' rows='12' cols='50' value={this.state.code} onChange={this.handleCodeChange}></textarea>
         <br/>
         <input type='button' value='Go' onClick={this.handelGoButton}/>
+        <div style={{whiteSpace:'pre-wrap'}}>{this.state.output}</div>
       </div>
     )
   }
