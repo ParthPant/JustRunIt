@@ -47,8 +47,10 @@ class App extends Component {
           onChange={this.handleLangChange}
           value={this.state.lang}
         >
-          <option value="c++">c++</option>
-          <option value="python">python</option>
+          <option value="c++">C++</option>
+          <option value="c">C</option>
+          <option value="python">Python</option>
+          <option value="nodejs">Node JS</option>
         </select>
         <br />
         {/*

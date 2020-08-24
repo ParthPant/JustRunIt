@@ -28,8 +28,35 @@ function getOutput(lang, code) {
   switch (lang) {
     case "c++":
       return handelCpp(code, baseDir);
+    case "c":
+      return handelC(code, baseDir);
     case "python":
       return handelPython(code, baseDir);
+    case "nodejs":
+      return handelNodejs(code, baseDir);
+  }
+}
+
+async function handelC(code, baseDir) {
+  const options = { cwd: baseDir };
+  console.log("c test recieved");
+  filePath = path.join(baseDir, "test.c");
+  fs.writeFileSync(filePath, code, err => {
+    if (err) {
+      throw err;
+    } else {
+      console.log("Test file written");
+    }
+  });
+  try {
+    var { stderr, stdout } = await exec("gcc test.c", options);
+    console.log("compiled");
+    ({ stderr, stdout } = await exec("./a.out", options));
+    return stdout;
+  } catch (err) {
+    console.log("---------err-----------");
+    console.log(err.stderr);
+    return err.stderr;
   }
 }
 
@@ -69,6 +96,27 @@ async function handelPython(code, baseDir) {
   });
   try {
     var { stderr, stdout } = await exec("python test.py", options);
+    return stdout;
+  } catch (err) {
+    console.log("---------err-----------");
+    console.log(err.stderr);
+    return err.stderr;
+  }
+}
+
+async function handelNodejs(code, baseDir) {
+  const options = { cwd: baseDir };
+  console.log("nodejs test recieved");
+  filePath = path.join(baseDir, "test.js");
+  fs.writeFileSync(filePath, code, err => {
+    if (err) {
+      throw err;
+    } else {
+      console.log("Test file written");
+    }
+  });
+  try {
+    var { stderr, stdout } = await exec("node test", options);
     return stdout;
   } catch (err) {
     console.log("---------err-----------");
