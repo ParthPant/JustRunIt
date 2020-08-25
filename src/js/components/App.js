@@ -1,15 +1,25 @@
 import React, { Component } from "react";
 import AceEditor from "react-ace";
 import styled from "styled-components";
+import Logo from "../../images/logo.svg"
 import "ace-builds/src-noconflict/theme-monokai";
 import "ace-builds/src-noconflict/mode-c_cpp";
 import "ace-builds/src-noconflict/mode-python";
 import "ace-builds/src-noconflict/mode-javascript";
 
-const ContainerDiv = styled.div``;
+const ContainerDiv = styled.div`
+  background: #161f2e;
+  width: 100%;
+  height: 100%;
+  .heading{
+    color: white;
+  }
+`;
+
 const Controls = styled.div`
   display: flex;
   flex-wrap: wrap;
+
   .btn {
     background: #7aeb34;
     width: 10em;
@@ -129,7 +139,7 @@ class App extends Component {
   render() {
     return (
       <ContainerDiv>
-        <h1 className="heading">SnippetTester</h1>
+        <Logo height='80px'  width="auto" preserveAspectRatio="none"/>
         <Controls>
           <div className="select">
             <select
