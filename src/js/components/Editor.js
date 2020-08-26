@@ -83,6 +83,16 @@ const EditorFlex = styled.div`
   .codeDiv {
     flex: 1 1 300px;
     margin: 0 1em 0 0;
+    .aceInputsContainer{
+      display:flex;
+      flex-direction:column;
+      .codeAce{
+        margin-bottom: 0.5em;
+      }
+      .inputsAce{
+        margin-top: 0.5em;
+      }
+    }
   }
 `;
 
@@ -93,11 +103,13 @@ export default class Editor extends Component {
       code: "",
       lang: "c++",
       output: "",
-      mode: "c_cpp"
+      mode: "c_cpp",
+      inputs: ""
     };
     this.handelGoButton = this.handelGoButton.bind(this);
     this.handleAceChange = this.handleAceChange.bind(this);
     this.handleLangChange = this.handleLangChange.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this)
   }
 
   handelGoButton() {
@@ -131,6 +143,10 @@ export default class Editor extends Component {
     this.setState({ code: newValue });
   }
 
+  handleInputChange(newValue){
+    console.log(newValue)
+    this.setState({inputs: newValue})
+  }
   render() {
     return (
       <ContainerDiv>
@@ -159,15 +175,24 @@ export default class Editor extends Component {
         <br />
         <EditorFlex>
           <div className="codeDiv">
+            <div className='aceInputsContainer'>
             <AceEditor
               onChange={this.handleAceChange}
+      className='codeAce'
               theme="monokai"
               defaultValue="Write your code here"
               mode={this.state.mode}
               width="100%"
-              height="100%"
               showPrintMargin={true}
             />
+            <AceEditor
+              onChange={this.handleInputChange}
+      className='inputsAce'
+              theme="monokai"
+              width="100%"
+              showPrintMargin={false}
+            />
+      </div>
           </div>
           <div className="outputDiv">
             <AceEditor

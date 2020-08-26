@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "build": "webpack --mode production",
-    "server": "node server/server",
+    "server": "nodemon server/server",
     "start": "webpack-dev-server --open --mode development"
   },
   "author": "Parth Pant",
@@ -32,9 +32,11 @@
     "@fortawesome/free-solid-svg-icons": "^5.14.0",
     "@fortawesome/react-fontawesome": "^0.1.11",
     "body-parser": "^1.19.0",
+    "child_process": "^1.0.2",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "fs": "0.0.1-security",
+    "nodemon": "^2.0.4",
     "path": "^0.12.7",
     "react": "^16.13.1",
     "react-ace": "^9.1.3",

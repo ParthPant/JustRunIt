@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import AceEditor from "react-ace";
 import styled from "styled-components";
 import Header from "./Header";
-import Footer from "./Footer"
+import Footer from "./Footer";
 import Editor from "./Editor";
 import "ace-builds/src-noconflict/theme-monokai";
 import "ace-builds/src-noconflict/mode-c_cpp";
@@ -10,9 +10,10 @@ import "ace-builds/src-noconflict/mode-python";
 import "ace-builds/src-noconflict/mode-javascript";
 
 const Holder = styled.div`
-  background:#3c3c40; 
-  width: 100%;
-  height: 100%;
+  background: #3c3c40;
+  position: absolute;
+  right: 0;
+  left: 0;
   padding: 1em 5em;
   .heading {
     color: white;

@@ -5,6 +5,7 @@ const fs = require("fs");
 const homedir = require("os").homedir();
 const util = require("util");
 const exec = util.promisify(require("child_process").exec);
+const spwan = require("child_process").spawn;
 
 router.use(function timeLog(req, res, next) {
   console.log("Time:", Date.now());
@@ -14,10 +15,11 @@ router.use(function timeLog(req, res, next) {
 router.post("/run", function(req, res) {
   code = unescape(req.body.code);
   const lang = req.body.lang;
-  getOutput(lang, code).then(stdout => res.send(stdout));
+  inputs = unescape(req.body.inputs);
+  getOutput(lang, code, inputs).then(data => res.send(data));
 });
 
-function getOutput(lang, code) {
+function getOutput(lang, code, inputs) {
   const baseDir = path.join(homedir, "code-tester");
   if (!fs.existsSync(baseDir)) {
     fs.mkdirSync(baseDir, { recursive: true });
@@ -27,101 +29,151 @@ function getOutput(lang, code) {
   }
   switch (lang) {
     case "c++":
-      return handelCpp(code, baseDir);
+      return handelCpp(code, inputs, baseDir);
     case "c":
-      return handelC(code, baseDir);
+      return handelC(code, inputs, baseDir);
     case "python":
-      return handelPython(code, baseDir);
+      return handelPython(code, inputs, baseDir);
     case "nodejs":
-      return handelNodejs(code, baseDir);
+      return handelNodejs(code, inputs, baseDir);
   }
 }
 
-async function handelC(code, baseDir) {
-  const options = { cwd: baseDir };
-  console.log("c test recieved");
-  filePath = path.join(baseDir, "test.c");
-  fs.writeFileSync(filePath, code, err => {
-    if (err) {
-      throw err;
-    } else {
-      console.log("Test file written");
-    }
+function handelC(code, inputs, baseDir) {
+  return new Promise((resolve, reject) => {
+    const options = { cwd: baseDir };
+    console.log("c test recieved");
+    filePath = path.join(baseDir, "test.c");
+    fs.writeFileSync(filePath, code, err => {
+      if (err) {
+        throw err;
+      } else {
+        console.log("Test file written");
+      }
+    });
+    var response = "";
+    const compileProcess = spwan("gcc", ["test.c"], options);
+    compileProcess.stderr.on("data", data => (response = data));
+    compileProcess.on("close", () => {
+      if (response) {
+        resolve(response);
+      } else {
+        const runProcess = spwan("./a.out", options);
+        handleInputs(inputs, runProcess).then(() => {
+          runProcess.stdout.on("data", data => (response += data.toString()));
+          runProcess.stderr.on("data", err => (response += err.toString()));
+          runProcess.on("close", () => {
+            console.log("------------------end-----------------");
+            console.log(response);
+            resolve(response);
+          });
+        });
+      }
+    });
   });
-  try {
-    var { stderr, stdout } = await exec("gcc test.c", options);
-    console.log("compiled");
-    ({ stderr, stdout } = await exec("./a.out", options));
-    return stdout;
-  } catch (err) {
-    console.log("---------err-----------");
-    console.log(err.stderr);
-    return err.stderr;
-  }
 }
 
-async function handelCpp(code, baseDir) {
-  const options = { cwd: baseDir };
-  console.log("c++ test recieved");
-  filePath = path.join(baseDir, "test.cpp");
-  fs.writeFileSync(filePath, code, err => {
-    if (err) {
-      throw err;
-    } else {
-      console.log("Test file written");
-    }
+function handelCpp(code, inputs, baseDir) {
+  return new Promise((resolve, reject) => {
+    const options = { cwd: baseDir };
+    console.log("c++ test recieved");
+    filePath = path.join(baseDir, "test.cpp");
+    fs.writeFileSync(filePath, code, err => {
+      if (err) {
+        throw err;
+      } else {
+        console.log("Test file written");
+      }
+    });
+    var response = "";
+    const compileProcess = spwan("g++", ["test.cpp"], options);
+    compileProcess.stderr.on("data", data => (response = data));
+    compileProcess.on("close", () => {
+      if (response) {
+        resolve(response);
+      } else {
+        const runProcess = spwan("./a.out", options);
+        handleInputs(inputs, runProcess).then(() => {
+          runProcess.stdout.on("data", data => (response += data.toString()));
+          runProcess.stderr.on("data", err => (response += err.toString()));
+          runProcess.on("close", () => {
+            console.log("------------------end-----------------");
+            console.log(response);
+            resolve(response);
+          });
+        });
+      }
+    });
   });
-  try {
-    var { stderr, stdout } = await exec("g++ test.cpp", options);
-    console.log("compiled");
-    ({ stderr, stdout } = await exec("./a.out", options));
-    return stdout;
-  } catch (err) {
-    console.log("---------err-----------");
-    console.log(err.stderr);
-    return err.stderr;
-  }
 }
 
-async function handelPython(code, baseDir) {
-  const options = { cwd: baseDir };
-  console.log("python test recieved");
-  filePath = path.join(baseDir, "test.py");
-  fs.writeFileSync(filePath, code, err => {
-    if (err) {
-      throw err;
-    } else {
-      console.log("Test file written");
-    }
+function handelPython(code, inputs, baseDir) {
+  return new Promise((resolve, reject) => {
+    const options = { cwd: baseDir };
+    console.log("python test recieved");
+    filePath = path.join(baseDir, "test.py");
+    fs.writeFileSync(filePath, code, err => {
+      if (err) {
+        throw err;
+      } else {
+        console.log("Test file written");
+      }
+    });
+    const runProcess = spwan("python", ["test.py"], options);
+    var response = "";
+    handleInputs(inputs, runProcess).then(() => {
+      runProcess.stdout.on("data", data => (response += data.toString()));
+      runProcess.stderr.on("data", err => console.log(err.toString()));
+      runProcess.on("close", () => {
+        console.log("------------------end-----------------");
+        console.log(response);
+        resolve(response);
+      });
+    });
   });
-  try {
-    var { stderr, stdout } = await exec("python test.py", options);
-    return stdout;
-  } catch (err) {
-    console.log("---------err-----------");
-    console.log(err.stderr);
-    return err.stderr;
-  }
 }
 
-async function handelNodejs(code, baseDir) {
-  const options = { cwd: baseDir };
-  console.log("nodejs test recieved");
-  filePath = path.join(baseDir, "test.js");
-  fs.writeFileSync(filePath, code, err => {
-    if (err) {
-      throw err;
-    } else {
-      console.log("Test file written");
-    }
+function handelNodejs(code, inputs, baseDir) {
+  return new Promise((resolve, reject) => {
+    const options = { cwd: baseDir };
+    console.log("nodejs test recieved");
+    filePath = path.join(baseDir, "test.js");
+    fs.writeFileSync(filePath, code, err => {
+      if (err) {
+        throw err;
+      } else {
+        console.log("Test file written");
+      }
+    });
+    const runProcess = spwan("node", ["test"], options);
+    var response = "";
+    handleInputs(inputs, runProcess).then(() => {
+      runProcess.stdout.on("data", data => {
+        response += data.toString();
+      });
+      runProcess.stderr.on("data", err => console.log(err.toString()));
+      runProcess.on("close", () => {
+        console.log("------------------end-----------------");
+        console.log(response);
+        resolve(response);
+      });
+    });
   });
-  try {
-    var { stderr, stdout } = await exec("node test", options);
-    return stdout;
-  } catch (err) {
-    console.log("---------err-----------");
-    console.log(err.stderr);
-    return err.stderr;
-  }
 }
+
+function handleInputs(inputs, process) {
+  return new Promise((resolve, reject) => {
+    if (inputs) {
+      inputs = inputs.split("\n");
+      console.log(inputs);
+      process.stdin.on("error", err => console.log(err));
+      inputs.forEach(input => {
+        process.stdin.write(input + "\n");
+      });
+      process.stdin.end();
+    }
+    resolve();
+  });
+}
+
 module.exports = router;
