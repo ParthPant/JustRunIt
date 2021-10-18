@@ -74,7 +74,6 @@ const Controls = styled.div`
 
 const EditorFlex = styled.div`
   display: flex;
-  height: 70%;
   flex-wrap: wrap;
   .outputDiv {
     flex: 1 1 300px;
@@ -83,6 +82,7 @@ const EditorFlex = styled.div`
   .codeDiv {
     flex: 1 1 300px;
     margin: 0 1em 0 0;
+
     .aceInputsContainer{
       display:flex;
       flex-direction:column;
@@ -96,6 +96,7 @@ const EditorFlex = styled.div`
   }
 `;
 
+const font_size = 15;
 export default class Editor extends Component {
   constructor() {
     super();
@@ -176,23 +177,26 @@ export default class Editor extends Component {
         <EditorFlex>
           <div className="codeDiv">
             <div className='aceInputsContainer'>
-            <AceEditor
-              onChange={this.handleAceChange}
-      className='codeAce'
-              theme="monokai"
-              defaultValue="Write your code here"
-              mode={this.state.mode}
-              width="100%"
-              showPrintMargin={true}
-            />
-            <AceEditor
-              onChange={this.handleInputChange}
-      className='inputsAce'
-              theme="monokai"
-              width="100%"
-              showPrintMargin={false}
-            />
-      </div>
+              <AceEditor
+                onChange={this.handleAceChange}
+                className='codeAce'
+                theme="monokai"
+                defaultValue="Write your code here"
+                mode={this.state.mode}
+                width="100%"
+                fontSize={font_size}
+                showPrintMargin={true}
+              />
+              <AceEditor
+                onChange={this.handleInputChange}
+                className='inputsAce'
+                theme="monokai"
+                width="100%"
+                height="300px"
+                fontSize={font_size}
+                showPrintMargin={false}
+              />
+            </div>
           </div>
           <div className="outputDiv">
             <AceEditor
@@ -201,6 +205,7 @@ export default class Editor extends Component {
               theme="monokai"
               width="100%"
               height="100%"
+              fontSize={font_size}
               showPrintMargin={false}
             />
           </div>

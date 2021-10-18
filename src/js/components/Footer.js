@@ -5,7 +5,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faGithub,
   faLinkedin,
-  faInstagram
+  faInstagram,
+  faTwitter
 } from "@fortawesome/free-brands-svg-icons";
 
 const Container = styled.div`
@@ -13,6 +14,10 @@ const Container = styled.div`
   color: white;
   font-family: Roboto;
   text-align: center;
+  display: flex;
+  justify-content: space-between;
+  margin: 0 auto;
+  width: 50%;
   .icons{
     *{
       margin: 1em 0.5em;
@@ -31,27 +36,32 @@ const Container = styled.div`
   }
 `;
 
-export default function Footer(props) {
+export default function Footer() {
   return (
     <Container>
       <div className="tag">
-        Made with ♥ by
-        <ParthLogo
-          className="logo"
-          fill="white"
-          width="3.5em"
-          height="auto"
-        />
+        Made with ❤️ by
+        <a href="https://ParthPant.github.io">
+          <ParthLogo
+            className="logo"
+            fill="white"
+            width="3.5em"
+            height="auto"
+          />
+        </a>
       </div>
       <div className="icons">
         <a href="https://github.com/ParthPant">
-          <FontAwesomeIcon icon={faGithub} />
+          <FontAwesomeIcon icon={faGithub} size="2x"/>
         </a>
         <a href="https://www.linkedin.com/in/parth-pant-866bb4189/">
-          <FontAwesomeIcon icon={faLinkedin} />
+          <FontAwesomeIcon icon={faLinkedin} size="2x"/>
         </a>
         <a href="https://www.instagram.com/pantparth/">
-          <FontAwesomeIcon icon={faInstagram} />
+          <FontAwesomeIcon icon={faInstagram} size="2x"/>
+        </a>
+        <a href="https://twitter.com/PantParth">
+          <FontAwesomeIcon icon={faTwitter} size="2x"/>
         </a>
       </div>
     </Container>
