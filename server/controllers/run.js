@@ -2,25 +2,19 @@ const express = require("express");
 const router = express.Router();
 const path = require("path");
 const fs = require("fs");
-const homedir = require("os").homedir();
-const util = require("util");
-const exec = util.promisify(require("child_process").exec);
+const tmpdir = require("os").tmpdir();
 const spwan = require("child_process").spawn;
-
-router.use(function timeLog(req, res, next) {
-  console.log("Time:", Date.now());
-  next();
-});
 
 router.post("/run", function(req, res) {
   code = unescape(req.body.code);
+  console.log(req.body);
   const lang = req.body.lang;
   inputs = unescape(req.body.inputs);
   getOutput(lang, code, inputs).then(data => res.send(data));
 });
 
 function getOutput(lang, code, inputs) {
-  const baseDir = path.join(homedir, "code-tester");
+  const baseDir = path.join(tmpdir, "JRT");
   if (!fs.existsSync(baseDir)) {
     fs.mkdirSync(baseDir, { recursive: true });
     console.log("created test folder");
@@ -40,15 +34,12 @@ function getOutput(lang, code, inputs) {
 }
 
 function handelC(code, inputs, baseDir) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve, _reject) => {
     const options = { cwd: baseDir };
-    console.log("c test recieved");
     filePath = path.join(baseDir, "test.c");
     fs.writeFileSync(filePath, code, err => {
       if (err) {
         throw err;
-      } else {
-        console.log("Test file written");
       }
     });
     var response = "";
@@ -63,8 +54,6 @@ function handelC(code, inputs, baseDir) {
           runProcess.stdout.on("data", data => (response += data.toString()));
           runProcess.stderr.on("data", err => (response += err.toString()));
           runProcess.on("close", () => {
-            console.log("------------------end-----------------");
-            console.log(response);
             resolve(response);
           });
         });
@@ -74,15 +63,12 @@ function handelC(code, inputs, baseDir) {
 }
 
 function handelCpp(code, inputs, baseDir) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve, _reject) => {
     const options = { cwd: baseDir };
-    console.log("c++ test recieved");
     filePath = path.join(baseDir, "test.cpp");
     fs.writeFileSync(filePath, code, err => {
       if (err) {
         throw err;
-      } else {
-        console.log("Test file written");
       }
     });
     var response = "";
@@ -97,8 +83,6 @@ function handelCpp(code, inputs, baseDir) {
           runProcess.stdout.on("data", data => (response += data.toString()));
           runProcess.stderr.on("data", err => (response += err.toString()));
           runProcess.on("close", () => {
-            console.log("------------------end-----------------");
-            console.log(response);
             resolve(response);
           });
         });
@@ -108,25 +92,20 @@ function handelCpp(code, inputs, baseDir) {
 }
 
 function handelPython(code, inputs, baseDir) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve, _reject) => {
     const options = { cwd: baseDir };
-    console.log("python test recieved");
     filePath = path.join(baseDir, "test.py");
     fs.writeFileSync(filePath, code, err => {
       if (err) {
         throw err;
-      } else {
-        console.log("Test file written");
       }
     });
     const runProcess = spwan("python", ["test.py"], options);
     var response = "";
     handleInputs(inputs, runProcess).then(() => {
       runProcess.stdout.on("data", data => (response += data.toString()));
-      runProcess.stderr.on("data", err => console.log(err.toString()));
+      runProcess.stderr.on("data", err => (response += err.toString()));
       runProcess.on("close", () => {
-        console.log("------------------end-----------------");
-        console.log(response);
         resolve(response);
       });
     });
@@ -134,15 +113,12 @@ function handelPython(code, inputs, baseDir) {
 }
 
 function handelNodejs(code, inputs, baseDir) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve, _reject) => {
     const options = { cwd: baseDir };
-    console.log("nodejs test recieved");
     filePath = path.join(baseDir, "test.js");
     fs.writeFileSync(filePath, code, err => {
       if (err) {
         throw err;
-      } else {
-        console.log("Test file written");
       }
     });
     const runProcess = spwan("node", ["test"], options);
@@ -151,10 +127,8 @@ function handelNodejs(code, inputs, baseDir) {
       runProcess.stdout.on("data", data => {
         response += data.toString();
       });
-      runProcess.stderr.on("data", err => console.log(err.toString()));
+      runProcess.stderr.on("data", err => (response += err.toString()));
       runProcess.on("close", () => {
-        console.log("------------------end-----------------");
-        console.log(response);
         resolve(response);
       });
     });
@@ -162,7 +136,7 @@ function handelNodejs(code, inputs, baseDir) {
 }
 
 function handleInputs(inputs, process) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve, _reject) => {
     if (inputs) {
       inputs = inputs.split("\n");
       console.log(inputs);

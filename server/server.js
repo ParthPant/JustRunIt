@@ -6,10 +6,8 @@ const cors = require("cors");
 
 const app = express();
 const port = 3000;
-const router = express.Router();
 
 const jsonParser = bodyParser.json();
-const urlencodedParsed = bodyParser.urlencoded({ extended: false });
 
 app.use(cors());
 
