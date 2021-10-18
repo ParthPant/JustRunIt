@@ -5,7 +5,8 @@
   "scripts": {
     "build": "webpack --mode production",
     "server": "nodemon server/server",
-    "start": "webpack-dev-server --open --mode development"
+    "front": "webpack-dev-server --open --mode development",
+    "start": "node server/server.js"
   },
   "author": "Parth Pant",
   "license": "ISC",
