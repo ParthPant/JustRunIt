@@ -4,10 +4,13 @@
   "description": "",
   "scripts": {
     "build": "webpack --mode production",
-    "front": "webpack-dev-server --open --mode development"
+    "front": "webpack-dev-server --open --mode development",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "author": "Parth Pant",
   "license": "ISC",
+  "homepage": "https://parthpant.github.io/JustRunIt",
   "devDependencies": {
     "@babel/core": "^7.11.4",
     "@babel/preset-env": "^7.11.0",
@@ -16,6 +19,7 @@
     "babel-loader": "^8.1.0",
     "css-loader": "^4.2.2",
     "file-loader": "^6.0.0",
+    "gh-pages": "^3.2.3",
     "html-loader": "^1.2.1",
     "html-webpack-plugin": "^4.3.0",
     "sass": "^1.26.10",
