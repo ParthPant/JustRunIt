@@ -7,7 +7,6 @@ const spwan = require("child_process").spawn;
 
 router.post("/run", function(req, res) {
   code = unescape(req.body.code);
-  console.log(req.body);
   const lang = req.body.lang;
   inputs = unescape(req.body.inputs);
   getOutput(lang, code, inputs).then(data => res.send(data));
@@ -17,9 +16,6 @@ function getOutput(lang, code, inputs) {
   const baseDir = path.join(tmpdir, "JRT");
   if (!fs.existsSync(baseDir)) {
     fs.mkdirSync(baseDir, { recursive: true });
-    console.log("created test folder");
-  } else {
-    console.log("test folder exists");
   }
   switch (lang) {
     case "c++":

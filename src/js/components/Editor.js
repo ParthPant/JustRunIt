@@ -115,13 +115,19 @@ export default class Editor extends Component {
 
   handelGoButton() {
     //handle compile code
+
+    // get relevant data to pass on to the server
+    let req_data = (({code, lang, output, inputs}) => ({code, lang, output, inputs}))(this.state);
+    console.log(req_data);
+
     this.setState({ output: "" });
     const requestOptions = {
       crossDomain: true,
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(this.state)
+      body: JSON.stringify(req_data)
     };
+
     fetch("http://localhost:3000/run", requestOptions)
       .then(res => res.text())
       .then(data => {
