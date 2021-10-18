@@ -6,7 +6,7 @@
     "build": "webpack --mode production",
     "front": "webpack-dev-server --open --mode development",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d dist"
   },
   "author": "Parth Pant",
   "license": "ISC",

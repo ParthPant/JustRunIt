@@ -43,6 +43,7 @@ function handelC(code, inputs, baseDir) {
     compileProcess.stderr.on("data", data => (response = data));
     compileProcess.on("close", () => {
       if (response) {
+        fs.unlink(filePath, err => {if (err) console.log(err)});
         resolve(response);
       } else {
         const runProcess = spwan("./a.out", options);
@@ -50,6 +51,8 @@ function handelC(code, inputs, baseDir) {
           runProcess.stdout.on("data", data => (response += data.toString()));
           runProcess.stderr.on("data", err => (response += err.toString()));
           runProcess.on("close", () => {
+            fs.unlink(filePath, err => {if (err) console.log(err)});
+            fs.unlink(filePath, err => {if (err) console.log(err)});
             resolve(response);
           });
         });
@@ -72,6 +75,7 @@ function handelCpp(code, inputs, baseDir) {
     compileProcess.stderr.on("data", data => (response = data));
     compileProcess.on("close", () => {
       if (response) {
+        fs.unlink(filePath, err => {if (err) console.log(err)});
         resolve(response);
       } else {
         const runProcess = spwan("./a.out", options);
@@ -79,6 +83,8 @@ function handelCpp(code, inputs, baseDir) {
           runProcess.stdout.on("data", data => (response += data.toString()));
           runProcess.stderr.on("data", err => (response += err.toString()));
           runProcess.on("close", () => {
+            fs.unlink(filePath, err => {if (err) console.log(err)});
+            fs.unlink(filePath, err => {if (err) console.log(err)});
             resolve(response);
           });
         });
@@ -102,6 +108,7 @@ function handelPython(code, inputs, baseDir) {
       runProcess.stdout.on("data", data => (response += data.toString()));
       runProcess.stderr.on("data", err => (response += err.toString()));
       runProcess.on("close", () => {
+        fs.unlink(filePath, err => {if (err) console.log(err)});
         resolve(response);
       });
     });
@@ -125,6 +132,7 @@ function handelNodejs(code, inputs, baseDir) {
       });
       runProcess.stderr.on("data", err => (response += err.toString()));
       runProcess.on("close", () => {
+        fs.unlink(filePath, err => {if (err) console.log(err)});
         resolve(response);
       });
     });
