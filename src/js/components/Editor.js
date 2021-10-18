@@ -124,11 +124,11 @@ export default class Editor extends Component {
     const requestOptions = {
       crossDomain: true,
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin" : "*" },
       body: JSON.stringify(req_data)
     };
 
-    fetch("http://localhost:3000/run", requestOptions)
+    fetch("https://just-run-it.herokuapp.com:3000/run", requestOptions)
       .then(res => res.text())
       .then(data => {
         this.setState({ output: data });

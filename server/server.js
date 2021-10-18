@@ -11,6 +11,10 @@ const jsonParser = bodyParser.json();
 
 app.use(cors());
 
+app.get("/", (_req, res) => {
+  res.send("JustRuntIt end points");
+});
+
 app.post("/run", jsonParser, run);
 
 app.listen(port, () => {
