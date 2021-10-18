@@ -128,7 +128,7 @@ export default class Editor extends Component {
       body: JSON.stringify(req_data)
     };
 
-    fetch("https://localhost:3000/run", requestOptions).then(res => res.text())
+    fetch("http://localhost:5000/run", requestOptions).then(res => res.text())
       .then(data => {
         this.setState({ output: data });
       });
