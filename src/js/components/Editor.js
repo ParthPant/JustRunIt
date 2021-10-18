@@ -118,17 +118,17 @@ export default class Editor extends Component {
 
     // get relevant data to pass on to the server
     let req_data = (({code, lang, output, inputs}) => ({code, lang, output, inputs}))(this.state);
-    console.log(req_data);
 
     this.setState({ output: "" });
     const requestOptions = {
       crossDomain: true,
       method: "POST",
-      headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin" : "*" },
+      headers: { "Content-Type": "application/json"},
       body: JSON.stringify(req_data)
     };
 
-    fetch("http://localhost:5000/run", requestOptions).then(res => res.text())
+    fetch("https://just-run-it.herokuapp.com/run", requestOptions)
+      .then(res => res.text())
       .then(data => {
         this.setState({ output: data });
       });
