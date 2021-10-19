@@ -50,14 +50,13 @@ function handelC(code: string, inputs: string, baseDir: string): Promise<string>
       } else {
         const runProcess = spawn("./a.out", options);
         const binPath = path.join(baseDir, 'a.out');
-        handleInputs(inputs, runProcess).then(() => {
-          runProcess.stdout.on("data", data => { response += data as string });
-          runProcess.stderr.on("data", err => { response += err as string });
-          runProcess.on("close", () => {
-            fs.unlink(filePath, err => {if (err) console.log(err)});
-            fs.unlink(binPath, err => {if (err) console.log(err)});
-            resolve(response);
-          });
+        handleInputs(inputs, runProcess)
+        runProcess.stdout.on("data", data => { response += data as string });
+        runProcess.stderr.on("data", err => { response += err as string });
+        runProcess.on("close", () => {
+          fs.unlink(filePath, err => {if (err) console.log(err)});
+          fs.unlink(binPath, err => {if (err) console.log(err)});
+          resolve(response);
         });
       }
     });
@@ -79,14 +78,13 @@ function handelCpp(code: string, inputs: string, baseDir: string): Promise<strin
       } else {
         const runProcess = spawn("./a.out", options);
         const binPath = path.join(baseDir, 'a.out');
-        handleInputs(inputs, runProcess).then(() => {
-          runProcess.stdout.on("data", data => { response += data as string });
-          runProcess.stderr.on("data", err => { response += err as string });
-          runProcess.on("close", () => {
-            fs.unlink(filePath, err => {if (err) console.log(err)});
-            fs.unlink(binPath, err => {if (err) console.log(err)});
-            resolve(response);
-          });
+        handleInputs(inputs, runProcess);
+        runProcess.stdout.on("data", data => { response += data as string });
+        runProcess.stderr.on("data", err => { response += err as string });
+        runProcess.on("close", () => {
+          fs.unlink(filePath, err => {if (err) console.log(err)});
+          fs.unlink(binPath, err => {if (err) console.log(err)});
+          resolve(response);
         });
       }
     });
@@ -100,13 +98,12 @@ function handelPython(code: string, inputs: string, baseDir: string): Promise<st
     fs.writeFileSync(filePath, code);
     const runProcess = spawn("python", ["test.py"], options);
     let response = "";
-    handleInputs(inputs, runProcess).then(() => {
-      runProcess.stdout.on("data", data => { response += data as string });
-      runProcess.stderr.on("data", err => { response += err as string });
-      runProcess.on("close", () => {
-        fs.unlink(filePath, err => {if (err) console.log(err)});
-        resolve(response);
-      });
+    handleInputs(inputs, runProcess);
+    runProcess.stdout.on("data", data => { response += data as string });
+    runProcess.stderr.on("data", err => { response += err as string });
+    runProcess.on("close", () => {
+      fs.unlink(filePath, err => {if (err) console.log(err)});
+      resolve(response);
     });
   });
 }
@@ -118,29 +115,25 @@ function handelNodejs(code: string, inputs: string, baseDir: string): Promise<st
     fs.writeFileSync(filePath, code);
     const runProcess = spawn("node", ["test"], options);
     let response = "";
-    handleInputs(inputs, runProcess).then(() => { 
-      runProcess.stdout.on("data", data => { response += data as string; });
-      runProcess.stderr.on("data", err => { response += err as string });
-      runProcess.on("close", () => {
-        fs.unlink(filePath, err => {if (err) console.log(err)});
-        resolve(response);
-      });
-     });
+    handleInputs(inputs, runProcess);
+    runProcess.stdout.on("data", data => { response += data as string; });
+    runProcess.stderr.on("data", err => { response += err as string });
+    runProcess.on("close", () => {
+      fs.unlink(filePath, err => {if (err) console.log(err)});
+      resolve(response);
+    });
   });
 }
 
-function handleInputs(inputs: string, process: ChildProcessWithoutNullStreams): Promise<null> {
-  return new Promise<null>((resolve, _reject) => {
-    if (inputs) {
-      let input_arr: string[] = inputs.split("\n");
-      process.stdin.on("error", err => console.log(err));
-      input_arr.forEach(input => {
-        process.stdin.write(input + "\n");
-      });
-      process.stdin.end();
-    }
-    resolve(null);
-  });
+function handleInputs(inputs: string, process: ChildProcessWithoutNullStreams) {
+  if (inputs) {
+    let input_arr: string[] = inputs.split("\n");
+    process.stdin.on("error", err => console.log(err));
+    input_arr.forEach(input => {
+      process.stdin.write(input + "\n");
+    });
+    process.stdin.end();
+  }
 }
 
 export {router};
