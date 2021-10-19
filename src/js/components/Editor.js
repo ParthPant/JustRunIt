@@ -127,7 +127,7 @@ export default class Editor extends Component {
       body: JSON.stringify(req_data)
     };
 
-    fetch("https://just-run-it.herokuapp.com/run", requestOptions)
+    fetch("http://localhost:3000/run", requestOptions)
       .then(res => res.text())
       .then(data => {
         this.setState({ output: data });

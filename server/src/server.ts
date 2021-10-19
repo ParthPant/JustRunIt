@@ -1,21 +1,19 @@
-const express = require("express");
-const bodyParser = require("body-parser");
+import express from 'express';
+import cors from 'cors';
 
-const run = require("./controllers/run");
-const cors = require("cors");
+import { router } from "./controllers/run";
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-const jsonParser = bodyParser.json();
-
 app.use(cors());
+app.use(express.json());
 
 app.get("/", (_req, res) => {
   res.send("JustRuntIt end points");
 });
 
-app.post("/run", jsonParser, run);
+app.post("/run", router);
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
